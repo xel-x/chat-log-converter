@@ -42,21 +42,28 @@
 
         String.prototype.splitToTwo = function(delimiter) {
             pos = this.indexOf(delimiter)
-            if(pos === -1) return [this,null]
+            if(pos === -1) return [this, ""]
             return [this.substring(0, pos), this.substring(pos + delimiter.length)]
         }
 
         function convertLine(line) {
             try {
-                let clock, remainder, content, to, user;
+                let clock, remainder, content, to, user = ['','','','',''];
                 [clock, remainder] = line.splitToTwo(' ')
                 clock = clock.replace('(','').replace(')','')
-                [remainder, content] = remainder.splitToTwo(':')
-                [user, remainder] = remainder.splitToTwo(' sagt zu ')
-                if(!remainder) to = "";
-                else to = " (zu "+remainder.split(',').map(to => to.trim()).map(to => '@'+to).join(', ')+")"
+                let res = remainder.splitToTwo(':')
+                remainder = res[0]
+                content = res[1]
+                if(remainder.indexOf('sagt zu') !== -1) {
+                    [user, remainder] = remainder.splitToTwo(' sagt zu ')
+                    to = " (zu "+remainder.split(',').map(to => to.trim()).map(to => '@'+to).join(', ')+")"
+                } else {
+                    user = remainder
+                    to = ''
+                }
                 return `[[@${user}: ${clock}${to}\n${content}]]`
             } catch (e) {
+                console.error(e)
                 return line;
             }
         }
@@ -65,7 +72,7 @@
             return chatlog
             .replace(/☆/g, '')
             .replace(/ +/g, ' ')
-            .split("\n")
+            .split(/$/m)
             .map(line => line.trim())
             .map(line => convertLine(line))
             .join("\n");
@@ -74,7 +81,7 @@
         const input = document.getElementById('input');
         const output = document.getElementById('output');
 
-        input.addEventListener('change', () => output.value = convertChatLog(input.value));
+        //input.addEventListener('change', () => output.value = convertChatLog(input.value));
         input.addEventListener('input', () => output.value = convertChatLog(input.value));
     </script>
 </body>
