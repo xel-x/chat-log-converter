@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatlog Converter</title>
+    <style>
+        .flex {
+            display: flex;
+            width: 100%;
+        }
+        section {
+            width: 40%;
+            margin: 1em;
+        }
+        textarea {
+            user-select: all;
+            width: 100%;
+            height: 200px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatlog Converter</h1>
+    <div class="flex">
+        <section>
+            <h2>Eingabe</h2>
+            <textarea name="input" id="input" onclick="selectall(event)"></textarea>
+        </section>
+        <section>
+            <h2>Ausgabe</h2>
+            <textarea name="output" id="output" readonly onclick="selectall(event)"></textarea>
+        </section>
+    </div>
+    <script>
+        function selectall(event) {
+            event.target.focus()
+            event.target.select()
+        }
+
+        String.prototype.splitToTwo = function(delimiter) {
+            pos = this.indexOf(delimiter)
+            if(pos === -1) return [this,null]
+            return [this.substring(0, pos), this.substring(pos + delimiter.length)]
+        }
+
+        function convertLine(line) {
+            try {
+                let clock, remainder, content, to, user;
+                [clock, remainder] = line.splitToTwo(' ')
+                clock = clock.replace('(','').replace(')','')
+                [remainder, content] = remainder.splitToTwo(':')
+                [user, remainder] = remainder.splitToTwo(' sagt zu ')
+                if(!remainder) to = "";
+                else to = " (zu "+remainder.split(',').map(to => to.trim()).map(to => '@'+to).join(', ')+")"
+                return `[[@${user}: ${clock}${to}\n${content}]]`
+            } catch (e) {
+                return line;
+            }
+        }
+
+        function convertChatLog(chatlog) {
+            return chatlog
+            .replace(/☆/g, '')
+            .replace(/ +/g, ' ')
+            .split("\n")
+            .map(line => line.trim())
+            .map(line => convertLine(line))
+            .join("\n");
+        }
+
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+
+        input.addEventListener('change', () => output.value = convertChatLog(input.value));
+        input.addEventListener('input', () => output.value = convertChatLog(input.value));
+    </script>
+</body>
+</html>
