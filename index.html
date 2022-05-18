@@ -61,7 +61,7 @@
                     user = remainder
                     to = ''
                 }
-                return `[[@${user}: ${clock}${to}\n${content}]]`
+                return `[[${user}: ${clock}${to}\n${content}]]`
             } catch (e) {
                 console.error(e)
                 return line;
