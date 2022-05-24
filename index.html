@@ -50,7 +50,6 @@
             try {
                 let clock, remainder, content, to, user = ['','','','',''];
                 [clock, remainder] = line.splitToTwo(' ')
-                if(!clock.match(/^\(.?.:..\)$/) return ''
                 clock = clock.replace('(','').replace(')','')
                 let res = remainder.splitToTwo(':')
                 remainder = res[0]
