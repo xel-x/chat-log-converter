@@ -75,7 +75,8 @@
             .replace(/ +/g, ' ')
             .split(/$/m)
             .map(line => line.trim())
-            .filter(x => x.length > 0)
+            .filter(line => line.length > 0)
+            .filter(line => !!line.match(/^\(..?:..\)/))
             .map(line => convertLine(line))
             .filter(x => x.length > 0)
             .join("\n");
