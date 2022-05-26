@@ -100,15 +100,16 @@
         function convertChatLog(chatlog) {
             return chatlog
             .replace(/ /g, ' ') // replace non-breaking spaces with spaces
-            .replace(/☆/g, '')
-            .replace(/ +/g, ' ')
-            .split(/$/m)
-            .map(line => line.trim())
-            .filter(line => line.length > 0)
-            .filter(line => !!line.match(/^\(..?:..\)/))
-            .map(line => convertLine(line))
-            .filter(x => x.length > 0)
-            .join("\n");
+            .replace(/\n☆ \n/g, '') // remove stars with newlines and spaces around them
+            .replace(/☆/g, '') // remove remaining stars
+            .replace(/ +/g, ' ') // reduce multiple spaces into one
+            .split(/$/m) // split by end of line
+            .map(line => line.trim()) // remove whitespace surrounding the content
+            .filter(line => line.length > 0) // filter empty lines
+            .filter(line => !!line.match(/^\(..?:..\)/)) // filter lines not starting with a time
+            .map(line => convertLine(line)) // convert line
+            .filter(x => x.length > 0) // filter empty lines created by converter
+            .join("\n"); // join together seperated by newline
         }
 
         input.addEventListener('input', () => output.value = convertChatLog(input.value));
