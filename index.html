@@ -12,6 +12,11 @@
         }
         section {
             width: 40%;
+        }
+        section.full {
+            width: 100%;
+        }
+        section {
             margin: 1em;
         }
         textarea {
@@ -20,10 +25,22 @@
             height: 200px;
             overflow: auto;
         }
+        label {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <h1>Chatlog Converter</h1>
+    <div class="flex">
+        <section>
+            <h2>Optionen</h2>
+            <label for="gagigor">
+                <input type="checkbox" name="gagigor" id="gagigor" checked onchange="updateSettings()">
+                Igor knebeln
+            </label>
+        </div>
+    </div>
     <div class="flex">
         <section>
             <h2>Eingabe</h2>
@@ -35,6 +52,16 @@
         </section>
     </div>
     <script>
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        let silenceIgor = true;
+
+        function updateSettings() {
+            silenceIgor = document.getElementById('gagigor').checked
+            output.value = convertChatLog(input.value)
+        }
+
+
         function selectall(event) {
             event.target.focus()
             event.target.select()
@@ -62,6 +89,7 @@
                     user = remainder
                     to = ''
                 }
+                if(silenceIgor && user === 'Igor') return ''
                 return `[[${user}: ${clock}${to}\n${content}]]`
             } catch (e) {
                 console.error(e)
@@ -82,10 +110,6 @@
             .join("\n");
         }
 
-        const input = document.getElementById('input');
-        const output = document.getElementById('output');
-
-        //input.addEventListener('change', () => output.value = convertChatLog(input.value));
         input.addEventListener('input', () => output.value = convertChatLog(input.value));
     </script>
 </body>
