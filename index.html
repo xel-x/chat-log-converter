@@ -99,6 +99,7 @@
 
         function convertChatLog(chatlog) {
             return chatlog
+            .replace(/ /g, ' ') // replace non-breaking spaces with spaces
             .replace(/☆/g, '')
             .replace(/ +/g, ' ')
             .split(/$/m)
