@@ -82,6 +82,7 @@
                 remainder = res[0]
                 content = res[1]
                 if(remainder.indexOf('flüstert zu') !== -1) return ''
+                if(remainder.indexOf('sagt telepathisch nur zu') !== -1) return ''
                 if(remainder.indexOf('sagt zu') !== -1) {
                     [user, remainder] = remainder.splitToTwo(' sagt zu ')
                     to = " (zu "+remainder.split(',').map(to => to.trim()).map(to => '@'+to).join(', ')+")"
@@ -96,12 +97,17 @@
                 return line;
             }
         }
-
+        
         function convertChatLog(chatlog) {
             return chatlog
             .replace(/ /g, ' ') // replace non-breaking spaces with spaces
-            .replace(/\n☆ \n/g, '') // remove stars with newlines and spaces around them
-            .replace(/☆/g, '') // remove remaining stars
+            .replace(/\r\n[☆♡↺↯🗲⍾🕭] ?\r\n/g, '') // remove stars with newlines and spaces around them
+            .replace(/\n[☆♡↺↯🗲⍾🕭] ?\n/g, '') // remove stars with newlines and spaces around them
+            .replace(/\r[☆♡↺↯🗲⍾🕭] ?\r/g, '') // remove stars with newlines and spaces around them
+            .replace(/[☆♡↺↯🗲⍾🕭] ?\r\n/g, '') // remove stars with newlines and spaces around them
+            .replace(/[☆♡↺↯🗲⍾🕭] ?\n/g, '') // remove stars with newlines and spaces around them
+            .replace(/[☆♡↺↯🗲⍾🕭] ?\r/g, '') // remove stars with newlines and spaces around them
+            .replace(/[☆♡↺↯🗲⍾🕭]/g, '') // remove remaining stars
             .replace(/ +/g, ' ') // reduce multiple spaces into one
             .split(/$/m) // split by end of line
             .map(line => line.trim()) // remove whitespace surrounding the content
